@@ -19,6 +19,7 @@ jobs:
         run: python -m pip install -r requirements-dev.txt
       - name: Run tests
         env:
+          PYTHONPATH: ${{ github.workspace }}
           GRADIO_ANALYTICS_ENABLED: "False"
           LMSTUDIO_BASE_URL: http://127.0.0.1:65534/v1
-        run: pytest -q
+        run: python -m pytest -q
