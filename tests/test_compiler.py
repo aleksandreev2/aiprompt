@@ -39,7 +39,7 @@ def test_interaction_pose_camera_order_is_stable():
     out = compile_plan(plan, kb, "test")
     atoms = [x.strip() for x in out.base_prompt.split(",")]
     assert atoms.index("1girl") < atoms.index("hug")
-    assert atoms.index("hug") < atoms.index("leaning forward")
-    assert atoms.index("leaning forward") < atoms.index("from side")
-    assert atoms.index("from side") < atoms.index("blurry background")
-    assert atoms.index("blurry background") < atoms.index("indoors")
+    assert atoms.index("hug") < atoms.index("leaning_forward")
+    assert atoms.index("leaning_forward") < atoms.index("from side")
+    assert atoms.index("from side") < atoms.index("blurry_background")
+    assert atoms.index("blurry_background") < atoms.index("indoors")
