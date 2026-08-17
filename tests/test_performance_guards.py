@@ -5,13 +5,16 @@ from backend.app.lmstudio import LMStudioClient
 from backend.app.schemas import ModelPlan
 
 
-def test_schema_stays_compact_but_allows_rich_prompts():
+def test_schema_stays_compact_but_keeps_semantic_dimensions_separate():
     schema = ModelPlan.model_json_schema()
     assert schema["properties"]["style"]["maxItems"] == 10
-    assert schema["properties"]["action_pose"]["maxItems"] == 16
-    assert schema["properties"]["anatomy_details"]["maxItems"] == 16
+    assert schema["properties"]["interaction"]["maxItems"] == 16
+    assert schema["properties"]["pose"]["maxItems"] == 14
+    assert schema["properties"]["critical_details"]["maxItems"] == 14
     assert schema["properties"]["uc"]["maxItems"] == 10
-    assert schema["$defs"]["CharacterPlan"]["properties"]["action_pose"]["maxItems"] == 14
+    char = schema["$defs"]["CharacterPlan"]["properties"]
+    assert char["interaction"]["maxItems"] == 12
+    assert char["pose"]["maxItems"] == 12
 
 
 def test_request_defaults_are_low_cost():
