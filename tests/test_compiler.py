@@ -5,25 +5,25 @@ from backend.app.knowledge import KnowledgeBase
 from backend.app.schemas import ModelPlan
 
 
-def test_unknown_candidate_is_kept_as_fallback():
+def test_unknown_candidate_is_kept_and_classified():
     kb = KnowledgeBase(Path(__file__).parents[1] / "knowledge")
     plan = ModelPlan(
         camera=["from below"],
         critical_details=["not_a_real_tag_123"],
     )
-    out = compile_plan(plan, kb, "test")
+    out = compile_plan(plan, kb, "test", mode="strict_tags")
     assert "from below" in out.verified_tags_used
     assert "not_a_real_tag_123" in out.prose_fallbacks
     assert "from below" in out.base_prompt
     assert "not_a_real_tag_123" in out.base_prompt
 
 
-def test_weighted_candidate_is_preserved():
+def test_weighted_candidate_is_preserved_as_unverified_candidate():
     kb = KnowledgeBase(Path(__file__).parents[1] / "knowledge")
     plan = ModelPlan(style=["0.7::custom style token ::"])
-    out = compile_plan(plan, kb, "test")
+    out = compile_plan(plan, kb, "test", mode="strict_tags")
     assert "0.7::custom style token ::" in out.base_prompt
-    assert "0.7::custom style token ::" in out.prose_fallbacks
+    assert "0.7::custom style token ::" in out.unverified_candidates
 
 
 def test_interaction_pose_camera_order_is_stable():
@@ -43,3 +43,14 @@ def test_interaction_pose_camera_order_is_stable():
     assert atoms.index("leaning_forward") < atoms.index("from side")
     assert atoms.index("from side") < atoms.index("blurry_background")
     assert atoms.index("blurry_background") < atoms.index("indoors")
+
+
+def test_conflicting_postures_keep_required_one():
+    kb = KnowledgeBase(Path(__file__).parents[1] / "knowledge")
+    intent = "девушка стоит у окна"
+    retrieval = kb.retrieve(intent, limit=8)
+    plan = ModelPlan(subject=["1girl"], pose=["sitting", "standing"], scene=["window"])
+    out = compile_plan(plan, kb, "test", intent=intent, retrieval=retrieval)
+    assert "standing" in out.base_prompt
+    assert "sitting" not in out.base_prompt
+    assert "sitting" in out.conflicts_removed
