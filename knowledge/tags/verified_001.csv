@@ -1,0 +1,71 @@
+canonical_tag,evidence_type,model_applicability,source_url,notes
+solo,DOCUMENTED,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Single-subject helper documented in official character tutorial.
+1boy,DOCUMENTED_SUBJECT_COUNT,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official subject-count tag.
+1girl,DOCUMENTED_SUBJECT_COUNT,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official subject-count tag.
+masterpiece,DOCUMENTED_SPECIAL_TAG,V4.5,https://docs.novelai.net/en/image/tags/,V4.5 aesthetic tag; may be added automatically by V4.5 Full Quality Tags.
+best quality,DOCUMENTED_SPECIAL_TAG,Current NovelAI image models,https://docs.novelai.net/en/image/tags/,Documented NovelAI quality tag.
+upper body,DOCUMENTED_FRAMING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official framing vocabulary.
+long sleeves,DOCUMENTED_EXAMPLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Used in official character-building example.
+shirt,DOCUMENTED_EXAMPLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Clothing concept appears in official prompt examples.
+white shirt,DOCUMENTED_EXAMPLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Used in official character-building example.
+simple background,DOCUMENTED,V4.5+,https://docs.novelai.net/en/image/strengthening-weakening/,Official negative-emphasis example uses this concept.
+gloves,DOCUMENTED_EXAMPLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Included in official character prompt example.
+long hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Hair-length concept covered by official tutorial.
+very aesthetic,DOCUMENTED_SPECIAL_TAG,Current NovelAI image models,https://docs.novelai.net/en/image/tags/,Documented aesthetic tag; may be automatically added by V4.5 Full Quality Tags.
+full body,DOCUMENTED_FRAMING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official framing vocabulary.
+cowboy shot,DOCUMENTED_FRAMING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official framing vocabulary.
+muscular,DOCUMENTED_BODY,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Body-shape tag documented in official tutorial.
+pale skin,DOCUMENTED_EXAMPLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Used in official character-building example.
+from side,DOCUMENTED_CAMERA,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official camera/view vocabulary.
+close-up,DOCUMENTED_FRAMING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official framing vocabulary.
+abs,DOCUMENTED_BODY,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Body-part tag documented in official tutorial.
+no text,DOCUMENTED,V4/V4.5,https://docs.novelai.net/en/image/qualitytags/,Current Quality Tags include this for V4.5 Full.
+from below,DOCUMENTED_CAMERA,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official camera/view vocabulary.
+outdoors,DOCUMENTED,Current NovelAI image models,https://docs.novelai.net/en/image/tags/,Known location concept in official tag documentation.
+2boys,DOCUMENTED_SUBJECT_COUNT,V4+,https://docs.novelai.net/en/image/multiplecharacters/,Numbered subject-count tags belong in base prompt for multi-character scenes.
+chibi,DOCUMENTED_EXAMPLE,Current NovelAI image models,https://docs.novelai.net/en/image/strengthening-weakening/,Used in official emphasis examples.
+year 2025,DOCUMENTED_SPECIAL_TAG,Current NovelAI image models,https://docs.novelai.net/en/image/tags/,Follows documented year XXXX tag form.
+profile,DOCUMENTED_CAMERA,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official camera/view vocabulary.
+portrait,DOCUMENTED_FRAMING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official framing vocabulary.
+1male → use 1boy,NAI_PREFERENCE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Project normalization rule: use documented 1boy for NovelAI subject count. This is NOT asserted as a Danbooru alias.
+male_focus,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=male_focus,Active Danbooru/Safebooru tag; ~1.1M posts in current index snapshot.
+looking_at_viewer,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=looking_at_viewer,Active Danbooru/Safebooru tag; ~4.8M posts in current index snapshot.
+smile,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=smile,Active Danbooru/Safebooru tag; ~4.1M posts in current index snapshot.
+jewelry,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=jewelry,Active Danbooru/Safebooru tag; ~1.6M posts in current index snapshot.
+sitting,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=sitting,Active Danbooru/Safebooru posture tag; ~1.3M posts.
+standing,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=standing,Active Danbooru/Safebooru posture tag; ~1.3M posts.
+white_background,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=white_background,Active Danbooru/Safebooru tag; ~2.3M posts.
+blush,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=blush,Active Danbooru/Safebooru tag; ~4.0M posts.
+collared_shirt,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=collared_shirt,Active Danbooru/Safebooru clothing tag; ~740k posts.
+highres,VERIFIED_TAG_SOURCE_AUTOTAG,Danbooru source semantics only,https://safebooru.donmai.us/wiki_pages/help%3Aautotags,Danbooru resolution autotag: width ≥1600 or height ≥1200. Do not treat source semantics as NovelAI quality semantics.
+absurdres,VERIFIED_TAG_SOURCE_AUTOTAG,Danbooru source semantics only,https://safebooru.donmai.us/wiki_pages/help%3Aautotags,Danbooru resolution autotag: width ≥3200 or height ≥2400. NovelAI may use this token differently.
+black_hair,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=black_hair,Active Danbooru/Safebooru tag; ~2.1M posts.
+holding,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/wiki_pages/holding,Canonical wiki meaning: holding an object with the hands; use more specific tags for body parts or worn clothing.
+female_focus,DEPRECATED_TAG_SOURCE,Do not use as canonical Danbooru tag,https://safebooru.donmai.us/wiki_pages/help%3Atags,Danbooru help explicitly lists female focus as deprecated/redundant.
+depth of field,DOCUMENTED_EFFECT,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official photographic/special-effect tag.
+boots,DOCUMENTED_CLOTHING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official clothing vocabulary.
+jacket,DOCUMENTED_CLOTHING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official topwear vocabulary.
+high contrast,DOCUMENTED_COLORING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official coloring tag.
+pants,DOCUMENTED_CLOTHING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official legwear vocabulary.
+white hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-color vocabulary.
+black hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-color vocabulary; Danbooru source form is black_hair.
+looking at another,DOCUMENTED_INTERACTION,V4/V4.5 multi-character,https://docs.novelai.net/en/image/multiplecharacters/,Used in official multi-character examples.
+photorealistic,DOCUMENTED_STYLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official art-style tag.
+messy hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-texture tag.
+pectorals,DOCUMENTED_BODY,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official body-part tag.
+corset,DOCUMENTED_CLOTHING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Used in official character outfit example.
+chromatic aberration,DOCUMENTED_EFFECT,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official effect tag; may conflict with Heavy UC.
+realistic,DOCUMENTED_STYLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official art-style tag.
+short hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-length tag.
+indoors,DOCUMENTED_LOCATION,Current NovelAI image models,https://docs.novelai.net/en/image/tags/,Official location concept.
+monochrome,DOCUMENTED_COLORING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official coloring tag; avoid conflicting non-grey color tags.
+pov,DOCUMENTED_FRAMING,NovelAI Anime models,https://docs.novelai.net/en/image/basics/,Official framing tag; may introduce first-person hands.
+from above,DOCUMENTED_CAMERA,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official view-angle tag.
+from behind,DOCUMENTED_CAMERA,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official view-angle tag.
+multicolored hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official complex hair-color tag.
+blue eyes,DOCUMENTED_EYES,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official eye-color tag.
+dress,DOCUMENTED_CLOTHING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official clothing vocabulary.
+shorts,DOCUMENTED_CLOTHING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official legwear vocabulary.
+leather belt,DOCUMENTED_CLOTHING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Used in official character outfit example.
+bokeh,DOCUMENTED_EFFECT,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official photographic/special-effect tag.
+cape,DOCUMENTED_CLOTHING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Used in official character outfit example.
