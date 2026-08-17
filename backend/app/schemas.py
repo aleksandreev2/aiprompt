@@ -1,7 +1,60 @@
+import re
 from typing import Literal
-from pydantic import BaseModel, Field
+
+from pydantic import BaseModel, Field, field_validator
 
 DetailLevel = Literal["literal", "enhanced", "rich"]
+
+_INTERNAL_BLOCKS = {
+    "style",
+    "subject",
+    "interaction",
+    "pose",
+    "camera",
+    "expression_gaze",
+    "critical_details",
+    "rendering",
+    "lighting",
+    "scene",
+    "verified",
+}
+_INTERNAL_EVIDENCE_RE = re.compile(r"^[A-Z][A-Z0-9_/-]*$")
+_FINAL_FILLER = {"basic view"}
+
+
+def sanitize_final_prompt(value: str) -> str:
+    """Remove retrieval/evidence annotations if a local model leaks them.
+
+    Retrieval context intentionally contains diagnostic triples such as
+    ``concept | pose | PROSE_RELATION``. They are useful to the model but are
+    never valid final NovelAI prompt syntax. Keep this guard at the response
+    boundary so neither Base Prompt nor Character Prompt can expose them.
+    """
+    if not value:
+        return ""
+
+    cleaned: list[str] = []
+    seen: set[str] = set()
+    for raw_atom in str(value).split(","):
+        atom = raw_atom.strip()
+        if not atom:
+            continue
+
+        parts = [part.strip() for part in atom.split("|")]
+        if (
+            len(parts) >= 3
+            and parts[1].lower() in _INTERNAL_BLOCKS
+            and _INTERNAL_EVIDENCE_RE.fullmatch(parts[2])
+        ):
+            atom = parts[0].strip()
+
+        key = " ".join(atom.lower().replace("_", " ").split())
+        if not key or key in _FINAL_FILLER or key in seen:
+            continue
+        seen.add(key)
+        cleaned.append(atom)
+
+    return ", ".join(cleaned)
 
 
 class CharacterPlan(BaseModel):
@@ -52,6 +105,11 @@ class CompiledCharacter(BaseModel):
     label: str
     prompt: str
 
+    @field_validator("prompt", mode="before")
+    @classmethod
+    def _sanitize_prompt(cls, value):
+        return sanitize_final_prompt(str(value or ""))
+
 
 class GenerateResponse(BaseModel):
     base_prompt: str
@@ -66,3 +124,8 @@ class GenerateResponse(BaseModel):
     coverage: list[str] = Field(default_factory=list)
     conflicts_removed: list[str] = Field(default_factory=list)
     model: str
+
+    @field_validator("base_prompt", "undesired_content", mode="before")
+    @classmethod
+    def _sanitize_prompt_fields(cls, value):
+        return sanitize_final_prompt(str(value or ""))
