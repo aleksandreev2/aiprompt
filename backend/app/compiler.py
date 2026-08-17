@@ -36,12 +36,7 @@ def validate_atoms(
     positive: bool,
     diverted_uc: list[str],
 ) -> list[str]:
-    """Validate what we can, but never turn the verified core into an allowlist.
-
-    A rich prompt will often contain useful candidate tags or short prose that are
-    not in the small fast core.  Those remain in the final prompt and are exposed
-    in the UI as unverified/prose fallbacks instead of being silently deleted.
-    """
+    """Validate what we can without turning the fast verified core into an allowlist."""
     out: list[str] = []
     seen: set[str] = set()
 
@@ -91,16 +86,17 @@ def _dedupe_strings(items: list[str]) -> list[str]:
 
 
 def _base_atoms(plan: ModelPlan) -> list[str]:
-    # This order intentionally mirrors the production prompt style requested for
-    # NovelAI: quality/style -> subject -> action -> camera -> critical details ->
-    # expression -> render/effects -> lighting -> environment.
+    # Production order intentionally keeps different steering dimensions visible:
+    # style/quality -> subject -> interaction -> posture/limbs -> camera -> gaze/
+    # expression -> only critical details -> render/effects -> light -> environment.
     return [
         *plan.style,
         *plan.subject,
-        *plan.action_pose,
+        *plan.interaction,
+        *plan.pose,
         *plan.camera,
-        *plan.anatomy_details,
-        *plan.expression,
+        *plan.expression_gaze,
+        *plan.critical_details,
         *plan.rendering,
         *plan.lighting,
         *plan.scene,
@@ -111,9 +107,10 @@ def _character_atoms(char) -> list[str]:
     return [
         *char.identity_appearance,
         *char.outfit,
-        *char.expression,
-        *char.action_pose,
-        *char.details,
+        *char.expression_gaze,
+        *char.interaction,
+        *char.pose,
+        *char.critical_details,
     ]
 
 
