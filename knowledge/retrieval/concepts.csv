@@ -1,7 +1,7 @@
 canonical,category,evidence,aliases_ru,aliases_en,source,notes
 1girl,subject,VERIFIED_NAI_DOC,"девушка|девушку|одна девушка|женщина|женщину|одна женщина","girl|woman|1 girl",NovelAI official,"NovelAI subject-count control; use when one female subject is explicit."
 1boy,subject,VERIFIED_NAI_DOC,"парень|парня|мужчина|мужчину|один мужчина","boy|man|1 boy",NovelAI official,"NovelAI subject-count control; do not infer when partner gender is unspecified."
-blurry background,rendering,VERIFIED_TAG_SOURCE,"размытый фон|фон размыт|размыто на фоне|задний план размыт","blurred background|background blur|blurry background",Project normalization,"Canonical/source-observed background blur concept."
+blurry background,rendering,VERIFIED_TAG_SOURCE,"размытый фон|фон размыт|размыто на фоне|задний план размыт|размыто за окном|за окном размыто","blurred background|background blur|blurry background",Project normalization,"Canonical/source-observed background blur concept."
 depth of field,rendering,VERIFIED_NAI_DOC,"глубина резкости|малая глубина резкости|размытие по глубине","depth of field|shallow depth of field",NovelAI official,"Use when foreground/background separation is actually intended."
 bokeh,rendering,VERIFIED_NAI_DOC,"боке|огни боке","bokeh",NovelAI official,"Special effect; do not add merely because the background is blurry."
 from side,camera,VERIFIED_NAI_DOC,"вид сбоку|камера сбоку|сбоку","side view|from side",NovelAI official,"Camera/view-angle control."
