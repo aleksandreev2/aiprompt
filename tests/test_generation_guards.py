@@ -3,57 +3,102 @@ from pathlib import Path
 import pytest
 
 from backend.app.compiler import compile_plan
-from backend.app.knowledge import KnowledgeBase
+from backend.app.knowledge import KnowledgeBase, norm
 from backend.app.lmstudio import LMStudioClient, LMStudioInvalidJSON
-from backend.app.prompting import build_system
+from backend.app.prompting import build_prompt_context
 from backend.app.schemas import ModelPlan
 
 ROOT = Path(__file__).parents[1]
 
 
-def test_russian_intent_does_not_pad_verified_lookup_with_unrelated_tags():
+def test_russian_intent_retrieves_hard_requirements_and_locks():
     kb = KnowledgeBase(ROOT / "knowledge")
-    intent = "девушка опирается руками к окну, за окном размыто школьный двор"
-    assert kb.select_tags(intent, limit=8) == []
-    system = build_system(kb, intent, 8, "balanced", True, "rich")
-    assert "No verified vocabulary rows lexically matched" in system
-    assert "OPTIONAL EXACT-MATCH VERIFIED VOCABULARY" not in system
-    tail = system.split("No verified vocabulary rows lexically matched", 1)[1]
-    assert "blue eyes" not in tail
-    assert "lowres" not in tail
+    intent = "девушку трахают в анус, она прижимается руками к окну, за окном размыто школьный двор"
+    pack = kb.retrieve(intent, limit=8)
+    required = {x.canonical for x in pack.required}
+    assert "1girl" in required
+    assert "anal" in required
+    assert "hands pressed against window" in required
+    assert "blurry background" in required
+    assert "schoolyard" in required
+    assert pack.locks["appearance"] == "UNSPECIFIED_DO_NOT_INVENT"
+    assert pack.locks["partner_gender"] == "UNSPECIFIED_DO_NOT_INFER"
+    assert pack.locks["camera"] == "UNSPECIFIED_NO_DECORATIVE_CAMERA"
 
 
-def test_rich_tag_mode_loads_observed_corpus_dialect_without_making_it_canonical():
+def test_system_uses_compact_retrieval_pack_not_whole_corpus_dump():
     kb = KnowledgeBase(ROOT / "knowledge")
-    system = build_system(kb, "простая сцена", 0, "strict_tags", True, "rich")
-    assert "PROJECT CORPUS DIALECT" in system
-    assert "OBSERVED, NOT CANONICAL" in system
-    assert "PROMPT ATOMS, NOT DESCRIPTIVE SENTENCES" in system
-    assert "interaction" in system
-    assert "BODY STATE + ORIENTATION + LIMB ACTION" in system
-    assert "Do not auto-add generic anatomy" in system
+    intent = "девушка прижимает ладони к стеклу, за окном размытый школьный двор"
+    system, pack = build_prompt_context(kb, intent, 8, "strict_tags", True, "rich")
+    assert "RETRIEVAL / INTENT PACK" in system
+    assert "REQUIRED USER CONCEPTS" in system
+    assert "hands pressed against window" in system
+    assert "schoolyard" in system
+    assert "LOCKS:" in system
+    assert "PROJECT CORPUS DIALECT" not in system
+    assert len(system) < 15000
+    assert pack.required
 
 
-def test_corpus_reference_is_separate_from_verified_database():
+def test_observed_adult_anchor_stays_separate_from_verified_core():
     kb = KnowledgeBase(ROOT / "knowledge")
-    assert kb.prompt_dialect
-    assert "sex from behind" in kb.prompt_dialect
-    # Corpus occurrence must not silently become VERIFIED_TAG_SOURCE.
-    assert kb.resolve("sex from behind") is None
+    assert kb.resolve("anal") is None
+    concept = kb.resolve_concept("трахают в анус")
+    assert concept is not None
+    assert concept.canonical == "anal"
+    assert concept.evidence == "OBSERVED_CORPUS"
 
 
-def test_exact_english_verified_matches_stay_narrow():
+def test_exact_english_verified_matches_stay_available():
     kb = KnowledgeBase(ROOT / "knowledge")
     tags = [r.canonical_tag for r in kb.select_tags("black hair, from below, green eyes", limit=8)]
-    assert tags == ["black hair", "from below", "green eyes"]
+    assert "black hair" in tags
+    assert "from below" in tags
+    assert "green eyes" in tags
+
+
+def test_bad_generic_plan_is_normalized_for_window_regression():
+    kb = KnowledgeBase(ROOT / "knowledge")
+    intent = "девушку трахают в анус, она прижимается руками к окну, за окном размыто школьный двор"
+    retrieval = kb.retrieve(intent, limit=8)
+    plan = ModelPlan(
+        style=["realistic"],
+        subject=["girl"],
+        interaction=["being fucked in the anus"],
+        pose=["hands pressed against window"],
+        camera=["wide angle"],
+        critical_details=["female genitalia"],
+        rendering=["intense", "high detail"],
+        lighting=["soft lighting"],
+        scene=["schoolyard"],
+    )
+    result = compile_plan(
+        plan,
+        kb,
+        "test",
+        intent=intent,
+        retrieval=retrieval,
+        mode="strict_tags",
+    )
+    prompt = result.base_prompt
+    normalized = norm(prompt)
+    assert "1girl" in normalized
+    assert "anal" in normalized
+    assert "hands pressed against window" in normalized
+    assert "blurry background" in normalized
+    assert "schoolyard" in normalized
+    assert "realistic" not in normalized
+    assert "wide angle" not in normalized
+    assert "female genitalia" not in normalized
+    assert "intense" not in normalized
+    assert "high detail" not in normalized
+    assert "soft lighting" not in normalized
+    assert all(not item.startswith("MISS:") for item in result.coverage)
 
 
 def test_uc_concepts_are_diverted_from_positive_prompt():
     kb = KnowledgeBase(ROOT / "knowledge")
-    plan = ModelPlan(
-        camera=["from below"],
-        rendering=["lowres"],
-    )
+    plan = ModelPlan(camera=["from below"], rendering=["lowres"])
     result = compile_plan(plan, kb, "test")
     assert "from below" in result.base_prompt
     assert "lowres" not in result.base_prompt
