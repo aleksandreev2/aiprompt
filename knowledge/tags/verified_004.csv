@@ -1,0 +1,38 @@
+canonical_tag,evidence_type,model_applicability,source_url,notes
+artistic error,DOCUMENTED_UC_CONCEPT,V4.5 Full UC,https://docs.novelai.net/en/image/undesiredcontent/,Current V4.5 UC concept.
+very displeasing,DOCUMENTED_AESTHETIC_AND_UC,Current NovelAI image models,https://docs.novelai.net/en/image/tags/,Official aesthetic tag and current V4.5 UC concept.
+too many watermarks,DOCUMENTED_UC_CONCEPT,V4.5 Full UC,https://docs.novelai.net/en/image/undesiredcontent/,Current V4.5 UC concept.
+bags under eyes,DOCUMENTED_EYE_DETAIL,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official eye-detail tag.
+year 2024,DOCUMENTED_YEAR_TAG,Current NovelAI image models,https://docs.novelai.net/en/image/tags/,Follows documented year XXXX syntax.
+pink hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-color tag.
+black sclera,DOCUMENTED_EYE_DETAIL,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official unique-eye tag.
+sketch,DOCUMENTED_STYLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official drawing-technique/style tag.
+motion blur,DOCUMENTED_EFFECT,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official special-effect tag.
+colored tips,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official complex hair-color tag.
+screentone,DOCUMENTED_UC_CONCEPT,V4.5 Full UC,https://docs.novelai.net/en/image/undesiredcontent/,Current V4.5 UC concept.
+bob cut,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hairstyle tag.
+pointy_ears,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11394811,Active body-feature tag.
+heart,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11879319?q=dark,Active symbol/object tag.
+food,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10060422?q=adachi_sakura,Active scene/object tag.
+hat,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10883913,Active headwear tag.
+black_hoodie,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11625744,Active clothing tag.
+military_uniform,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11798335?q=transformed,Active clothing-category tag.
+black_necktie,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11625744,Active accessory/clothing tag.
+spotlight,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8122245?q=swordsoul,Active lighting/scene tag.
+animal_print,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8873447?q=shirt,Active pattern tag.
+white_pupils,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/7413056?q=seele_%28honkai_impact%29,Active eye-feature tag.
+wings,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10943960?q=french_kiss,Active body-feature tag.
+bag,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11625744,Active object/accessory tag.
+fingernails,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8873447?q=shirt,Active anatomy/detail tag.
+floral_print,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11625744,Active pattern tag.
+looking_to_the_side,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11625744,Active gaze/head-direction tag; distinct from looking_away.
+moonlight,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8122245?q=swordsoul,Active lighting/environment tag.
+elf,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10883913,Active fantasy-subject tag.
+shirt_tucked_in,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/7413056?q=seele_%28honkai_impact%29,Active clothing-state tag.
+black_skirt,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11625744,Active clothing tag.
+black_robe,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/7832452?q=red_lips,Active specific robe color tag.
+weapon,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10943960?q=french_kiss,Active object/category tag.
+japanese_clothes,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11625744,Active clothing-category tag.
+greyscale,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI knowledge separate,https://safebooru.donmai.us/posts/8543579?q=tagme,Active coloring tag; do not auto-equate to NovelAI monochrome.
+white_gloves,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/7413056?q=seele_%28honkai_impact%29,Active clothing tag.
+grass,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11625744,Active environment tag.
