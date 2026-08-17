@@ -16,12 +16,11 @@ from .lmstudio import (
     LMStudioInvalidPlan,
     LMStudioTruncatedOutput,
 )
-from .prompting import build_system
+from .prompting import build_prompt_context
 
 ROOT = Path(__file__).resolve().parents[2]
 load_dotenv(ROOT / ".env")
 
-# Local resources only. Neither constructor touches LM Studio.
 kb = KnowledgeBase(ROOT / os.getenv("NAI_KNOWLEDGE_DIR", "knowledge"))
 lm = LMStudioClient()
 
@@ -66,7 +65,10 @@ CSS = """
 def _status_markdown(state: str, message: str, detail: str = "") -> str:
     icon = {"ok": "🟢", "warn": "🟡", "offline": "⚪"}.get(state, "⚪")
     suffix = f"  ·  {detail}" if detail else ""
-    return f"{icon} **LM Studio:** {message}  ·  **Verified tags:** {len(kb.tags)}{suffix}"
+    return (
+        f"{icon} **LM Studio:** {message}  ·  **Verified:** {len(kb.tags)}"
+        f"  ·  **Retrieval concepts:** {len(kb.concepts)}{suffix}"
+    )
 
 
 def _boot_status() -> str:
@@ -87,7 +89,7 @@ async def refresh_models(current_model: str | None = None):
     if not status.models:
         return (
             gr.update(choices=[current_model] if current_model else [], value=current_model or None),
-            _status_markdown("warn", "сервер запущен, но модель не загружена"),
+            _status_markdown("warn", "сервер запущен, но chat-модель не загружена"),
         )
 
     preferred = os.getenv("LMSTUDIO_MODEL", "").strip()
@@ -179,51 +181,55 @@ async def generate_prompt(
 
     mode = MODE_LABEL_TO_VALUE.get(mode_label, "balanced")
     detail_level = DETAIL_LABEL_TO_VALUE.get(detail_label, "rich")
-    tag_limit = max(0, min(int(max_context_tags), 16))
-    system = build_system(
+    context_limit = max(0, min(int(max_context_tags), 16))
+    system, retrieval = build_prompt_context(
         kb,
         intent,
-        tag_limit,
+        context_limit,
         mode,
         bool(add_quality_tags),
         detail_level,
     )
+
     user = (
         "Create ONE coherent NovelAI prompt plan for the visual intent below. "
-        "Respect locked/unspecified attributes. Expand the scene according to DETAIL depth, "
-        "but do not create alternatives or contradictory options.\n\nUSER INTENT:\n" + intent
+        "The RETRIEVAL PACK already contains hard requirements and locks. "
+        "Do not translate the sentence literally; decompose it into useful prompt controls. "
+        "Do not create alternatives or contradictory options.\n\nUSER INTENT:\n" + intent
     )
 
-    # Compact list-based JSON allows a much richer prompt at a lower token cost
-    # than the old PromptPart-object schema.
     base_budget = {
-        "literal": 320,
-        "enhanced": 420,
-        "rich": 520,
+        "literal": 280,
+        "enhanced": 360,
+        "rich": 460,
     }[detail_level]
-    first_budget = min(700, base_budget + (120 if len(intent) >= 1200 else 0))
+    first_budget = min(600, base_budget + (80 if len(intent) >= 1200 else 0))
 
     try:
         plan = await lm.plan(
             model=selected_model,
             system=system,
             user=user,
-            temperature=0.38 if detail_level == "rich" else 0.30,
+            temperature=0.42 if detail_level == "rich" else 0.32,
             max_tokens=first_budget,
         )
     except (LMStudioTruncatedOutput, LMStudioInvalidJSON, LMStudioInvalidPlan) as first_exc:
-        _runtime_log.warning("First structured generation failed: %s: %s", type(first_exc).__name__, first_exc)
-        retry_system = build_system(
+        _runtime_log.warning(
+            "First structured generation failed: %s: %s",
+            type(first_exc).__name__,
+            first_exc,
+        )
+        retry_system, retrieval = build_prompt_context(
             kb,
             intent,
-            0,
+            min(context_limit, 4),
             mode,
             bool(add_quality_tags),
-            detail_level,
+            "enhanced",
         )
         retry_user = (
             "COMPACT RETRY. Return only valid JSON for one coherent prompt. "
-            "Keep the important scene controls, remove redundancy, and do not enumerate vocabulary.\n\n"
+            "Preserve every REQUIRED USER CONCEPT and LOCK. Remove redundancy.\n\n"
             "USER INTENT:\n" + intent
         )
         try:
@@ -232,13 +238,17 @@ async def generate_prompt(
                 system=retry_system,
                 user=retry_user,
                 temperature=0.24,
-                max_tokens=380,
+                max_tokens=340,
             )
         except (LMStudioTruncatedOutput, LMStudioInvalidJSON, LMStudioInvalidPlan) as exc:
-            _runtime_log.error("Compact structured retry failed: %s: %s", type(exc).__name__, exc)
+            _runtime_log.error(
+                "Compact structured retry failed: %s: %s",
+                type(exc).__name__,
+                exc,
+            )
             return _offline_generation_result(
                 "LM Studio отвечает, но structured output дважды получился неполным. "
-                "Приложение не упало. Попробуй Enhanced depth или временно увеличь Context Length. "
+                "Приложение не упало. Попробуй Enhanced depth или Context Length 4096–8192. "
                 f"Диагностика: {type(exc).__name__}. Подробности: logs/runtime.log"
             )
         except Exception as exc:
@@ -254,12 +264,48 @@ async def generate_prompt(
             "Подробности: logs/runtime.log"
         )
 
-    result = compile_plan(plan, kb, selected_model)
+    result = compile_plan(
+        plan,
+        kb,
+        selected_model,
+        intent=intent,
+        retrieval=retrieval,
+        mode=mode,
+    )
 
-    warnings = "\n".join(f"- {x}" for x in result.warnings) or "Нет предупреждений."
+    validation_lines = []
+    if result.warnings:
+        validation_lines.extend(f"- {x}" for x in result.warnings)
+    else:
+        validation_lines.append("- Нет предупреждений.")
+    if result.coverage:
+        validation_lines.append("\n**Coverage**")
+        validation_lines.extend(f"- {x}" for x in result.coverage)
+    if result.conflicts_removed:
+        validation_lines.append("\n**Removed / normalized**")
+        validation_lines.extend(f"- {x}" for x in result.conflicts_removed)
+    warnings = "\n".join(validation_lines)
+
     notes = "\n".join(f"- {x}" for x in result.notes) or "Нет дополнительных заметок."
     verified = ", ".join(result.verified_tags_used) or "—"
-    prose = "\n".join(f"- {x}" for x in result.prose_fallbacks) or "—"
+
+    diagnostic_sections = []
+    if result.observed_candidates:
+        diagnostic_sections.append(
+            "**Observed/community candidates**\n"
+            + "\n".join(f"- {x}" for x in result.observed_candidates)
+        )
+    if result.unverified_candidates:
+        diagnostic_sections.append(
+            "**Unverified candidates**\n"
+            + "\n".join(f"- {x}" for x in result.unverified_candidates)
+        )
+    if result.prose_fallbacks:
+        diagnostic_sections.append(
+            "**Precise prose fallbacks**\n"
+            + "\n".join(f"- {x}" for x in result.prose_fallbacks)
+        )
+    diagnostics = "\n\n".join(diagnostic_sections) or "—"
 
     return (
         result.base_prompt,
@@ -268,10 +314,12 @@ async def generate_prompt(
         warnings,
         notes,
         verified,
-        prose,
+        diagnostics,
         (
-            f"🟢 Готово · model: `{result.model}` · locally verified: **{len(result.verified_tags_used)}** "
-            f"· unverified/prose: **{len(result.prose_fallbacks)}**"
+            f"🟢 Готово · model: `{result.model}` · verified: **{len(result.verified_tags_used)}** "
+            f"· observed: **{len(result.observed_candidates)}** "
+            f"· unknown/prose: **{len(result.unverified_candidates) + len(result.prose_fallbacks)}** "
+            f"· required: **{len(retrieval.required)}**"
         ),
     )
 
@@ -293,7 +341,7 @@ def build_demo() -> gr.Blocks:
     with gr.Blocks(title="NovelAI Prompt Lab", fill_width=True) as demo:
         gr.Markdown(
             "# NovelAI Prompt Lab\n"
-            "Свободное описание → LM Studio → prompt engineering → локальная валидация → готовый NovelAI prompt.",
+            "Русский/английский intent → hybrid retrieval → LM Studio → deterministic compiler → NovelAI prompt.",
             elem_id="app-title",
         )
 
@@ -302,8 +350,8 @@ def build_demo() -> gr.Blocks:
             refresh_button = gr.Button("↻ Проверить LM Studio", size="sm", min_width=190)
 
         gr.Markdown(
-            "Интерфейс **не зависит от запуска LM Studio**: можешь открыть его первым. "
-            "Когда Local Server появится на `127.0.0.1:1234`, модель будет обнаружена автоматически.",
+            "UI стартует без LM Studio. Retrieval и локальная knowledge-base загружаются сразу; "
+            "LLM нужен только после нажатия Generate.",
             elem_classes=["section-note"],
         )
 
@@ -312,14 +360,14 @@ def build_demo() -> gr.Blocks:
                 intent = gr.Textbox(
                     label="Что хочешь получить",
                     placeholder=(
-                        "Опиши сцену обычным языком. Можно отдельно указать, что нельзя менять или что ты заполнишь потом."
+                        "Опиши сцену обычным языком. Явные детали становятся requirements; "
+                        "неуказанные внешность/стиль/партнёр не должны выдумываться."
                     ),
                     lines=8,
                     max_lines=18,
                     autofocus=True,
                     elem_id="intent-box",
                 )
-
                 with gr.Row():
                     generate_button = gr.Button("Generate Prompt", variant="primary", scale=4)
                     clear_button = gr.Button("Очистить результат", scale=1)
@@ -336,13 +384,13 @@ def build_demo() -> gr.Blocks:
                     choices=list(MODE_LABEL_TO_VALUE.keys()),
                     value="Tag-heavy — максимум тегов",
                     label="Prompt language",
-                    info="Tag-heavy предпочитает NovelAI/Danbooru-style теги, но verified core не является белым списком.",
+                    info="Tag-heavy предпочитает compact prompt atoms; precise prose остаётся разрешённым fallback.",
                 )
                 detail_level = gr.Radio(
                     choices=list(DETAIL_LABEL_TO_VALUE.keys()),
                     value="Rich — полноценный production prompt",
                     label="Prompt depth",
-                    info="Rich достраивает совместимые позу, камеру, выражение, эффекты, свет и окружение, не выдумывая оставленную пустой внешность.",
+                    info="Rich расширяет только полезные dimensions; locks не дают выдумывать пустые атрибуты.",
                 )
                 add_quality_tags = gr.Checkbox(
                     value=True,
@@ -352,10 +400,10 @@ def build_demo() -> gr.Blocks:
                 max_context_tags = gr.Slider(
                     minimum=0,
                     maximum=16,
-                    value=6,
+                    value=8,
                     step=2,
-                    label="Verified tag context",
-                    info="Это подсказка модели, не allowlist. 4–6 обычно достаточно.",
+                    label="Retrieval context",
+                    info="Сколько top concepts давать модели. Explicit requirements сохраняются независимо от лимита.",
                 )
 
         generation_status = gr.Markdown("")
@@ -398,17 +446,17 @@ def build_demo() -> gr.Blocks:
                 )
 
         with gr.Tabs():
-            with gr.Tab("Validation"):
+            with gr.Tab("Validation / Coverage"):
                 warnings = gr.Markdown("")
                 verified_tags = gr.Textbox(
-                    label="Locally verified tags used",
+                    label="Locally verified controls used",
                     lines=4,
                     max_lines=10,
                     interactive=False,
                     buttons=["copy"],
                     elem_classes=["output-box"],
                 )
-            with gr.Tab("Unverified / prose"):
+            with gr.Tab("Observed / Unverified / Prose"):
                 prose_fallbacks = gr.Markdown("")
             with gr.Tab("Model notes"):
                 notes = gr.Markdown("")
