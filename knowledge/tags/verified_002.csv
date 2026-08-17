@@ -1,0 +1,71 @@
+canonical_tag,evidence_type,model_applicability,source_url,notes
+skirt,DOCUMENTED_CLOTHING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official legwear vocabulary.
+very long hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-length tag.
+belt,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=belt,Active Danbooru/Safebooru tag; ~500k posts.
+parted_lips,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=parted_lips,Active expression tag; ~724k posts.
+black_pants,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=black_pants,Active clothing tag; ~247k posts.
+necklace,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=necklace,Active accessory tag.
+bare_shoulders,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=bare_shoulders,Active tag; ~1.3M posts.
+closed_mouth,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=closed_mouth,Active expression tag; ~1.9M posts.
+necktie,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=necktie,Active clothing/accessory tag.
+ribbon,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=ribbon,Active accessory tag; ~1.4M posts.
+frills,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=frills,Active clothing-detail tag; ~749k posts.
+open_mouth,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=open_mouth,Active expression tag; ~3.4M posts.
+thighhighs,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=thighhighs,Active legwear tag; ~1.5M posts.
+choker,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=choker,Active accessory tag; ~605k posts.
+black_shirt,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=black_shirt,Active clothing tag; ~360k posts.
+closed_eyes,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=closed_eyes,Active expression tag; ~1.0M posts.
+puffy_sleeves,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=puffy_sleeves,Active sleeve-detail tag; ~511k posts.
+bow,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=bow,Active accessory tag; ~1.7M posts.
+black_gloves,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=black_gloves,Active clothing tag; ~659k posts.
+black_dress,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=black_dress,Active clothing tag; ~368k posts.
+black_jacket,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=black_jacket,Active clothing tag; ~381k posts.
+short_sleeves,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=short_sleeves,Active clothing-detail tag; ~887k posts.
+shoes,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=shoes,Active footwear tag; ~829k posts.
+animal_ears,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=animal_ears,Active body-feature tag; ~1.7M posts.
+smirk,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/wiki_pages/smirk,Smug asymmetric smile; do not collapse to generic smile.
+looking_up,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=looking_up,Head/gaze upward; distinguish from eye-only upturned_eyes and facing_up.
+looking_down,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=looking_down,Active downward-looking tag; distinguish from stronger head_down/facing_down concepts.
+kneeling,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=kneeling,Both-knee posture; distinguish from on_one_knee.
+tongue_out,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/wiki_pages/tongue,Visible protruding tongue; Danbooru implication to tongue.
+eye_contact,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=eye_contact,Relational gaze; requires multiple applicable subjects.
+half-closed_eyes,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/wiki_pages/half-closed_eyes,"Partially closed eyes; not interchangeable with closed_eyes, jitome or narrowed_eyes."
+solo_focus,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=solo_focus,Composition/focus tag used when one subject is emphasized among multiple.
+lying,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=lying,General lying posture; use more specific orientation when needed.
+light_particles,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=light_particles,Active visual-effect tag.
+film_grain,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=film_grain,Active visual effect tag.
+blurry_background,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=blurry_background,Active focus/background tag.
+sunlight,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/wiki_pages/sunlight,Use when sunlight is meaningfully emphasized; not merely daytime.
+earrrings,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=earrings,Active accessory tag.
+collarbone,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=collarbone,Active body-feature tag.
+glasses,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=glasses,Active accessory tag.
+blurred foreground → blurry_foreground,TAG_SOURCE_PREFERS_OTHER_TAG,Danbooru source normalization only,https://safebooru.donmai.us/posts?tags=blurry_foreground,Current source vocabulary uses blurry_foreground; do not claim blurred_foreground is a formal alias without alias metadata.
+multiple_boys,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=multiple_boys,Active subject tag; ~677k posts.
+buttons,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=buttons,Active clothing-detail tag; ~212k posts.
+wide_sleeves,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=wide_sleeves,Active sleeve-detail tag; ~352k posts.
+vest,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=vest,Active clothing tag; ~313k posts.
+muscular_male,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=muscular_male,Active subject/body tag; keep separate from generic muscular.
+chain,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=chain,Active object/accessory tag; ~139k posts.
+bracelet,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=bracelet,Active accessory tag; ~263k posts.
+chain_necklace,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=chain_necklace,Active specific necklace tag; ~11k posts.
+high_collar,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=high_collar,Active collar/clothing tag; ~62k posts.
+baggy_pants,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=baggy_pants,Active legwear tag; ~11k posts.
+fingerless_gloves,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=fingerless_gloves,Active glove/clothing tag; ~360k posts.
+open_clothes,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=open_clothes,Active broad clothing-state tag; prefer a garment-specific form when available.
+open_jacket,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=open_jacket,Active garment-specific clothing-state tag.
+zipper,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=zipper,Active clothing/object-detail tag; ~55k posts.
+blurry,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=blurry,Active image-focus/quality tag; ~303k posts.
+night,DOCUMENTED_EXAMPLE,V4+,https://docs.novelai.net/en/image/strengthening-weakening/,Used in current official numeric-emphasis example.
+rain,DOCUMENTED_EXAMPLE,V4+,https://docs.novelai.net/en/image/strengthening-weakening/,Used in current official numeric-emphasis example.
+lace_trim,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=lace-trimmed_collar,General lace detail tag confirmed by current implication evidence; ~69k posts.
+sneakers,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11690226,Active footwear tag; ~94k posts.
+navel,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/9997635,Active body-feature tag; ~1.6M posts.
+cyberpunk,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/wiki_pages/cyberpunk,Canonical theme/aesthetic tag; distinct from cyberpunk_(series).
+black_background,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/comments?page=4&post_id=827168,Active background tag observed in current source.
+casual,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/wiki_pages/casual,Specific fashion/context tag; modern street clothes on a character normally shown in costume/unusual attire.
+streetwear,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11491181,Active fashion-style tag; ~2.3k posts.
+long_dress,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/wiki_pages/long_dress,Beyond-knee dress-length tag; implicates dress.
+wet_hair,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11669443,Active hair-state tag; ~20k posts.
+flower,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10274661,Active object tag; ~865k posts.
+dark,DOCUMENTED_COLORING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official NovelAI coloring tag; distinct from dark_background.
+no lineart,DOCUMENTED_STYLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official drawing-technique tag; community weights remain experimental.
