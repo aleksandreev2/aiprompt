@@ -20,6 +20,7 @@ def test_generate_while_offline_returns_ui_message_instead_of_exception():
             "portrait, black hair, from below",
             None,
             "Balanced — теги + prose",
+            "Rich — полноценный production prompt",
             True,
             8,
         )
