@@ -31,20 +31,30 @@ class KnowledgeBase:
         self._load()
 
     def _load(self) -> None:
-        csv_path = self.root / "verified_tags.csv"
-        with csv_path.open("r", encoding="utf-8-sig", newline="") as f:
-            for row in csv.DictReader(f):
-                if not row.get("canonical_tag"):
-                    continue
-                record = TagRecord(
-                    canonical_tag=row.get("canonical_tag", "").strip(),
-                    evidence_type=row.get("evidence_type", "").strip(),
-                    model_applicability=row.get("model_applicability", "").strip(),
-                    source_url=row.get("source_url", "").strip(),
-                    notes=row.get("notes", "").strip(),
-                )
-                self.tags.append(record)
-                self.by_norm[norm(record.canonical_tag)] = record
+        # Repository-friendly format: the verified core may be split into several
+        # small CSV shards under knowledge/tags/. A single verified_tags.csv is
+        # still supported for local exports/backward compatibility.
+        tag_dir = self.root / "tags"
+        csv_paths = sorted(tag_dir.glob("*.csv")) if tag_dir.exists() else []
+        if not csv_paths:
+            csv_paths = [self.root / "verified_tags.csv"]
+
+        for csv_path in csv_paths:
+            if not csv_path.exists():
+                continue
+            with csv_path.open("r", encoding="utf-8-sig", newline="") as f:
+                for row in csv.DictReader(f):
+                    if not row.get("canonical_tag"):
+                        continue
+                    record = TagRecord(
+                        canonical_tag=row.get("canonical_tag", "").strip(),
+                        evidence_type=row.get("evidence_type", "").strip(),
+                        model_applicability=row.get("model_applicability", "").strip(),
+                        source_url=row.get("source_url", "").strip(),
+                        notes=row.get("notes", "").strip(),
+                    )
+                    self.tags.append(record)
+                    self.by_norm[norm(record.canonical_tag)] = record
 
         source_dir = self.root / "source"
         chunks = []
