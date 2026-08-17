@@ -71,7 +71,7 @@ Base Prompt + Character Prompts + UC
 
 ## Why this is not just a giant system prompt
 
-The LLM is responsible for understanding intent and relations. Exact tag validity is checked by code against `knowledge/verified_tags.csv`.
+The LLM is responsible for understanding intent and relations. Exact tag validity is checked by code against the verified CSV shards in `knowledge/tags/`.
 
 If the model returns something as `kind="tag"` but that string is absent from the verified database, the compiler automatically downgrades it to prose and exposes a warning. The model never receives the entire tag database as a checklist.
 
@@ -88,8 +88,8 @@ backend/app/
   compiler.py                  # deterministic validation + assembly
   schemas.py                   # compact structured-output schema
 knowledge/
-  verified_tags.csv
-  source/                      # curated reference material
+  tags/                        # verified tag-core CSV shards
+  source/                      # curated production references
 docs/
   PERFORMANCE.md
 scripts/
