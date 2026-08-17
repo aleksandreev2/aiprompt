@@ -24,7 +24,7 @@ def test_request_defaults_are_low_cost():
     assert sig.parameters["temperature"].default == 0.30
 
 
-def test_simple_rich_ui_generation_uses_520_budget(monkeypatch):
+def test_simple_rich_ui_generation_uses_460_budget(monkeypatch):
     seen = {}
 
     async def fake_plan(**kwargs):
@@ -40,11 +40,11 @@ def test_simple_rich_ui_generation_uses_520_budget(monkeypatch):
         True,
         6,
     ))
-    assert seen["max_tokens"] == 520
+    assert seen["max_tokens"] == 460
     assert result[-1].startswith("🟢")
 
 
-def test_literal_mode_uses_320_budget(monkeypatch):
+def test_literal_mode_uses_280_budget(monkeypatch):
     seen = {}
 
     async def fake_plan(**kwargs):
@@ -60,4 +60,20 @@ def test_literal_mode_uses_320_budget(monkeypatch):
         True,
         4,
     ))
-    assert seen["max_tokens"] == 320
+    assert seen["max_tokens"] == 280
+
+
+def test_retrieval_pack_does_not_explode_prompt_size():
+    intent = "девушка стоит у окна, вид сбоку, школьный двор размыт"
+    system, pack = gradio_ui.build_prompt_context(
+        gradio_ui.kb,
+        intent,
+        8,
+        "strict_tags",
+        True,
+        "rich",
+    )
+    assert len(pack.candidates) <= 12
+    assert len(pack.rules) <= 8
+    assert len(pack.examples) <= 3
+    assert len(system) < 15000
