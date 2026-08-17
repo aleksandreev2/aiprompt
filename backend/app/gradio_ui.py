@@ -36,8 +36,14 @@ if not _runtime_log.handlers:
 
 MODE_LABEL_TO_VALUE = {
     "Balanced — теги + prose": "balanced",
-    "Strict Tags — максимум проверенных тегов": "strict_tags",
+    "Tag-heavy — максимум тегов": "strict_tags",
     "Prose Fallback — больше естественного языка": "prose_fallback",
+}
+
+DETAIL_LABEL_TO_VALUE = {
+    "Literal — только сказанное": "literal",
+    "Enhanced — аккуратно дополнить": "enhanced",
+    "Rich — полноценный production prompt": "rich",
 }
 
 THEME = gr.themes.Soft(
@@ -149,6 +155,7 @@ async def generate_prompt(
     intent: str,
     model: str | None,
     mode_label: str,
+    detail_label: str,
     add_quality_tags: bool,
     max_context_tags: int,
 ):
@@ -171,46 +178,67 @@ async def generate_prompt(
         selected_model = status.models[0]
 
     mode = MODE_LABEL_TO_VALUE.get(mode_label, "balanced")
+    detail_level = DETAIL_LABEL_TO_VALUE.get(detail_label, "rich")
     tag_limit = max(0, min(int(max_context_tags), 16))
-    system = build_system(kb, intent, tag_limit, mode, bool(add_quality_tags))
+    system = build_system(
+        kb,
+        intent,
+        tag_limit,
+        mode,
+        bool(add_quality_tags),
+        detail_level,
+    )
     user = (
-        "Create ONE concise NovelAI prompt plan for the visual intent below. "
-        "Use only requested visual facts. Do not enumerate reference vocabulary. "
-        "Do not create alternatives.\n\nUSER INTENT:\n" + intent
+        "Create ONE coherent NovelAI prompt plan for the visual intent below. "
+        "Respect locked/unspecified attributes. Expand the scene according to DETAIL depth, "
+        "but do not create alternatives or contradictory options.\n\nUSER INTENT:\n" + intent
     )
 
+    # Compact list-based JSON allows a much richer prompt at a lower token cost
+    # than the old PromptPart-object schema.
+    base_budget = {
+        "literal": 320,
+        "enhanced": 420,
+        "rich": 520,
+    }[detail_level]
+    first_budget = min(700, base_budget + (120 if len(intent) >= 1200 else 0))
+
     try:
-        # The broken prototype allowed 2200 completion tokens and could keep a
-        # GPU busy for ~40 seconds. Ordinary requests are deliberately capped.
-        first_budget = 512 if len(intent) < 1200 else 700
         plan = await lm.plan(
             model=selected_model,
             system=system,
             user=user,
-            temperature=0.30,
+            temperature=0.38 if detail_level == "rich" else 0.30,
             max_tokens=first_budget,
         )
     except (LMStudioTruncatedOutput, LMStudioInvalidJSON, LMStudioInvalidPlan) as first_exc:
         _runtime_log.warning("First structured generation failed: %s: %s", type(first_exc).__name__, first_exc)
-        retry_system = build_system(kb, intent, 0, mode, bool(add_quality_tags))
+        retry_system = build_system(
+            kb,
+            intent,
+            0,
+            mode,
+            bool(add_quality_tags),
+            detail_level,
+        )
         retry_user = (
-            "COMPACT RETRY. Return only the requested JSON. "
-            "Use <=8 base parts, <=8 parts per character and <=4 UC parts. "
-            "Only concepts explicitly present in USER INTENT.\n\nUSER INTENT:\n" + intent
+            "COMPACT RETRY. Return only valid JSON for one coherent prompt. "
+            "Keep the important scene controls, remove redundancy, and do not enumerate vocabulary.\n\n"
+            "USER INTENT:\n" + intent
         )
         try:
             plan = await lm.plan(
                 model=selected_model,
                 system=retry_system,
                 user=retry_user,
-                temperature=0.20,
-                max_tokens=420,
+                temperature=0.24,
+                max_tokens=380,
             )
         except (LMStudioTruncatedOutput, LMStudioInvalidJSON, LMStudioInvalidPlan) as exc:
             _runtime_log.error("Compact structured retry failed: %s: %s", type(exc).__name__, exc)
             return _offline_generation_result(
                 "LM Studio отвечает, но structured output дважды получился неполным. "
-                "Приложение не упало. Сократи описание или временно увеличь Context Length до 8192. "
+                "Приложение не упало. Попробуй Enhanced depth или временно увеличь Context Length. "
                 f"Диагностика: {type(exc).__name__}. Подробности: logs/runtime.log"
             )
         except Exception as exc:
@@ -241,7 +269,10 @@ async def generate_prompt(
         notes,
         verified,
         prose,
-        f"🟢 Готово · model: `{result.model}` · verified tags used: **{len(result.verified_tags_used)}**",
+        (
+            f"🟢 Готово · model: `{result.model}` · locally verified: **{len(result.verified_tags_used)}** "
+            f"· unverified/prose: **{len(result.prose_fallbacks)}**"
+        ),
     )
 
 
@@ -262,7 +293,7 @@ def build_demo() -> gr.Blocks:
     with gr.Blocks(title="NovelAI Prompt Lab", fill_width=True) as demo:
         gr.Markdown(
             "# NovelAI Prompt Lab\n"
-            "Свободное описание → LM Studio → проверенные NovelAI/Danbooru controls → готовый prompt.",
+            "Свободное описание → LM Studio → prompt engineering → локальная валидация → готовый NovelAI prompt.",
             elem_id="app-title",
         )
 
@@ -281,8 +312,7 @@ def build_demo() -> gr.Blocks:
                 intent = gr.Textbox(
                     label="Что хочешь получить",
                     placeholder=(
-                        "Например: персонаж с длинными чёрными волосами, камера немного снизу, "
-                        "ночной город, мокрый асфальт, мягкий контровой свет…"
+                        "Опиши сцену обычным языком. Можно отдельно указать, что нельзя менять или что ты заполнишь потом."
                     ),
                     lines=8,
                     max_lines=18,
@@ -304,8 +334,15 @@ def build_demo() -> gr.Blocks:
                 )
                 mode = gr.Radio(
                     choices=list(MODE_LABEL_TO_VALUE.keys()),
-                    value="Balanced — теги + prose",
-                    label="Compiler mode",
+                    value="Tag-heavy — максимум тегов",
+                    label="Prompt language",
+                    info="Tag-heavy предпочитает NovelAI/Danbooru-style теги, но verified core не является белым списком.",
+                )
+                detail_level = gr.Radio(
+                    choices=list(DETAIL_LABEL_TO_VALUE.keys()),
+                    value="Rich — полноценный production prompt",
+                    label="Prompt depth",
+                    info="Rich достраивает совместимые позу, камеру, выражение, эффекты, свет и окружение, не выдумывая оставленную пустой внешность.",
                 )
                 add_quality_tags = gr.Checkbox(
                     value=True,
@@ -318,7 +355,7 @@ def build_demo() -> gr.Blocks:
                     value=6,
                     step=2,
                     label="Verified tag context",
-                    info="0–16. Только точные совпадения; меньше = легче запрос к локальной модели.",
+                    info="Это подсказка модели, не allowlist. 4–6 обычно достаточно.",
                 )
 
         generation_status = gr.Markdown("")
@@ -326,8 +363,8 @@ def build_demo() -> gr.Blocks:
         gr.Markdown("## Готовый prompt")
         base_prompt = gr.Textbox(
             label="Base Prompt",
-            lines=5,
-            max_lines=14,
+            lines=7,
+            max_lines=18,
             interactive=True,
             buttons=["copy"],
             elem_classes=["output-box"],
@@ -343,7 +380,7 @@ def build_demo() -> gr.Blocks:
 
         with gr.Accordion("Character Prompts", open=True):
             gr.Markdown(
-                "Появляются только когда модель действительно разносит сцену по отдельным персонажам.",
+                "Появляются для многоперсонажных сцен; глобальная композиция остаётся в Base Prompt.",
                 elem_classes=["section-note"],
             )
             character_boxes = []
@@ -364,14 +401,14 @@ def build_demo() -> gr.Blocks:
             with gr.Tab("Validation"):
                 warnings = gr.Markdown("")
                 verified_tags = gr.Textbox(
-                    label="Verified tags used",
+                    label="Locally verified tags used",
                     lines=4,
                     max_lines=10,
                     interactive=False,
                     buttons=["copy"],
                     elem_classes=["output-box"],
                 )
-            with gr.Tab("Prose fallbacks"):
+            with gr.Tab("Unverified / prose"):
                 prose_fallbacks = gr.Markdown("")
             with gr.Tab("Model notes"):
                 notes = gr.Markdown("")
@@ -386,7 +423,7 @@ def build_demo() -> gr.Blocks:
             prose_fallbacks,
             generation_status,
         ]
-        inputs = [intent, model, mode, add_quality_tags, max_context_tags]
+        inputs = [intent, model, mode, detail_level, add_quality_tags, max_context_tags]
 
         generate_button.click(fn=generate_prompt, inputs=inputs, outputs=outputs, show_progress="full")
         intent.submit(fn=generate_prompt, inputs=inputs, outputs=outputs, show_progress="full")
