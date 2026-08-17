@@ -35,6 +35,30 @@ def make_logger() -> logging.Logger:
 log = make_logger()
 
 
+def missing_project_assets(root: Path) -> list[str]:
+    """Return missing startup-critical assets.
+
+    The knowledge base used to be one ``knowledge/verified_tags.csv`` file.
+    Current repositories store the verified core as CSV shards under
+    ``knowledge/tags/``. Keep the legacy file as a supported fallback so older
+    working copies do not break, but never require it when shards exist.
+    """
+    missing: list[str] = []
+
+    legacy_tags = root / "knowledge" / "verified_tags.csv"
+    tag_dir = root / "knowledge" / "tags"
+    has_tag_shards = tag_dir.is_dir() and any(tag_dir.glob("*.csv"))
+    if not legacy_tags.is_file() and not has_tag_shards:
+        missing.append(f"{tag_dir}{os.sep}*.csv (or legacy {legacy_tags})")
+
+    required_files = [
+        root / "knowledge" / "source" / "model_profile_v45.md",
+        root / "backend" / "app" / "gradio_ui.py",
+    ]
+    missing.extend(str(p) for p in required_files if not p.is_file())
+    return missing
+
+
 def main() -> int:
     log.info("NovelAI Prompt Lab launcher starting")
     log.info("Python: %s", sys.version.replace("\n", " "))
@@ -42,12 +66,7 @@ def main() -> int:
     log.info("Project root: %s", ROOT)
     log.info("LM Studio is NOT required for startup")
 
-    required = [
-        ROOT / "knowledge" / "verified_tags.csv",
-        ROOT / "knowledge" / "source" / "model_profile_v45.md",
-        ROOT / "backend" / "app" / "gradio_ui.py",
-    ]
-    missing = [str(p) for p in required if not p.exists()]
+    missing = missing_project_assets(ROOT)
     if missing:
         raise RuntimeError("Missing required project files: " + ", ".join(missing))
 
