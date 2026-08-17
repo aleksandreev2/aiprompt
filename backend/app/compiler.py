@@ -1,106 +1,161 @@
 from __future__ import annotations
 
+import re
+
 from .knowledge import KnowledgeBase, norm
-from .schemas import CompiledCharacter, GenerateResponse, ModelPlan, PromptPart
+from .schemas import CompiledCharacter, GenerateResponse, ModelPlan
+
+_WEIGHT_RE = re.compile(r"^\s*(-?(?:\d+(?:\.\d+)?|\.\d+))::\s*(.*?)\s*::\s*$", re.S)
 
 
-def render_part(part: PromptPart) -> str:
-    text = part.text.strip()
-    if not text:
-        return ""
-    if abs(part.weight - 1.0) < 0.001:
+def _split_weight(text: str) -> tuple[str | None, str]:
+    """Return (weight_text, inner_text) for NovelAI numeric emphasis."""
+    m = _WEIGHT_RE.match(text)
+    if not m:
+        return None, text.strip()
+    return m.group(1), m.group(2).strip()
+
+
+def _render_weight(weight: str | None, text: str) -> str:
+    if weight is None:
         return text
-    return f"{part.weight:g}::{text} ::"
+    return f"{weight}::{text} ::"
 
 
-def validate_parts(
-    parts: list[PromptPart],
+def _clean_atom(value: str) -> str:
+    return value.strip().strip(",").strip()
+
+
+def validate_atoms(
+    atoms: list[str],
     kb: KnowledgeBase,
     warnings: list[str],
     used: list[str],
-    prose: list[str],
+    fallbacks: list[str],
     *,
     positive: bool,
-    diverted_uc: list[PromptPart],
-) -> list[PromptPart]:
-    out: list[PromptPart] = []
-    seen: set[tuple[str, str]] = set()
+    diverted_uc: list[str],
+) -> list[str]:
+    """Validate what we can, but never turn the verified core into an allowlist.
 
-    for part in parts:
-        text = part.text.strip().strip(",")
+    A rich prompt will often contain useful candidate tags or short prose that are
+    not in the small fast core.  Those remain in the final prompt and are exposed
+    in the UI as unverified/prose fallbacks instead of being silently deleted.
+    """
+    out: list[str] = []
+    seen: set[str] = set()
+
+    for raw in atoms:
+        text = _clean_atom(str(raw))
         if not text:
             continue
 
-        if part.kind == "tag":
-            rec = kb.resolve(text)
-            if rec is None:
-                warnings.append(f"Unknown tag converted to prose: {text}")
-                part = part.model_copy(update={"text": text, "kind": "prose", "weight": 1.0})
-                prose.append(text)
-            else:
-                part = part.model_copy(update={"text": rec.canonical_tag})
-                if positive and kb.is_uc_record(rec):
-                    warnings.append(f"UC concept moved out of positive prompt: {rec.canonical_tag}")
-                    diverted_uc.append(part.model_copy(update={"weight": 1.0}))
-                    continue
-                used.append(rec.canonical_tag)
-        else:
-            prose.append(text)
+        weight, inner = _split_weight(text)
+        lookup = inner if weight is not None else text
+        rec = kb.resolve(lookup)
 
-        key = (part.kind, norm(part.text))
-        if key in seen:
+        if rec is not None:
+            canonical = rec.canonical_tag
+            rendered = _render_weight(weight, canonical)
+            key = norm(canonical)
+
+            if positive and kb.is_uc_record(rec):
+                warnings.append(f"UC concept moved out of positive prompt: {canonical}")
+                diverted_uc.append(rendered)
+                continue
+
+            used.append(canonical)
+        else:
+            rendered = text
+            key = norm(inner if weight is not None else text)
+            fallbacks.append(text)
+
+        if not key or key in seen:
             continue
         seen.add(key)
-        out.append(part)
+        out.append(rendered)
 
     return out
 
 
-def _dedupe_parts(parts: list[PromptPart]) -> list[PromptPart]:
-    out: list[PromptPart] = []
-    seen: set[tuple[str, str]] = set()
-    for p in parts:
-        key = (p.kind, norm(p.text))
-        if key not in seen:
+def _dedupe_strings(items: list[str]) -> list[str]:
+    out: list[str] = []
+    seen: set[str] = set()
+    for item in items:
+        weight, inner = _split_weight(item)
+        key = norm(inner if weight is not None else item)
+        if key and key not in seen:
             seen.add(key)
-            out.append(p)
+            out.append(item)
     return out
+
+
+def _base_atoms(plan: ModelPlan) -> list[str]:
+    # This order intentionally mirrors the production prompt style requested for
+    # NovelAI: quality/style -> subject -> action -> camera -> critical details ->
+    # expression -> render/effects -> lighting -> environment.
+    return [
+        *plan.style,
+        *plan.subject,
+        *plan.action_pose,
+        *plan.camera,
+        *plan.anatomy_details,
+        *plan.expression,
+        *plan.rendering,
+        *plan.lighting,
+        *plan.scene,
+    ]
+
+
+def _character_atoms(char) -> list[str]:
+    return [
+        *char.identity_appearance,
+        *char.outfit,
+        *char.expression,
+        *char.action_pose,
+        *char.details,
+    ]
 
 
 def compile_plan(plan: ModelPlan, kb: KnowledgeBase, model: str) -> GenerateResponse:
     warnings: list[str] = []
     used: list[str] = []
-    prose: list[str] = []
-    diverted_uc: list[PromptPart] = []
+    fallbacks: list[str] = []
+    diverted_uc: list[str] = []
 
-    base = validate_parts(
-        plan.base_parts, kb, warnings, used, prose,
+    base = validate_atoms(
+        _base_atoms(plan), kb, warnings, used, fallbacks,
         positive=True, diverted_uc=diverted_uc,
     )
 
     chars: list[CompiledCharacter] = []
     for char in plan.characters:
-        parts = validate_parts(
-            char.parts, kb, warnings, used, prose,
+        parts = validate_atoms(
+            _character_atoms(char), kb, warnings, used, fallbacks,
             positive=True, diverted_uc=diverted_uc,
         )
-        prompt = ", ".join(filter(None, (render_part(p) for p in parts)))
+        prompt = ", ".join(parts)
         if prompt:
-            chars.append(CompiledCharacter(label=char.label, prompt=prompt))
+            chars.append(
+                CompiledCharacter(
+                    label=char.label.strip() or "Character",
+                    prompt=prompt,
+                )
+            )
 
-    uc = validate_parts(
-        plan.uc_parts, kb, warnings, used, prose,
+    uc = validate_atoms(
+        plan.uc, kb, warnings, used, fallbacks,
         positive=False, diverted_uc=diverted_uc,
     )
-    uc = _dedupe_parts(uc + diverted_uc)
+    uc = _dedupe_strings(uc + diverted_uc)
 
     return GenerateResponse(
-        base_prompt=", ".join(filter(None, (render_part(p) for p in base))),
+        base_prompt=", ".join(_dedupe_strings(base)),
         characters=chars,
-        undesired_content=", ".join(filter(None, (render_part(p) for p in uc))),
+        undesired_content=", ".join(uc),
         warnings=list(dict.fromkeys(warnings)),
         notes=plan.notes,
         verified_tags_used=list(dict.fromkeys(used)),
-        prose_fallbacks=list(dict.fromkeys(prose)),
+        prose_fallbacks=list(dict.fromkeys(fallbacks)),
         model=model,
     )
