@@ -3,9 +3,9 @@ from pathlib import Path
 import pytest
 
 from backend.app.compiler import compile_plan
-from backend.app.knowledge import KnowledgeBase
+from backend.app.knowledge import KnowledgeBase, norm
 from backend.app.lmstudio import LMStudioClient, LMStudioInvalidJSON
-from backend.app.prompting import build_prompt_context, build_system
+from backend.app.prompting import build_prompt_context
 from backend.app.schemas import ModelPlan
 
 ROOT = Path(__file__).parents[1]
@@ -81,17 +81,18 @@ def test_bad_generic_plan_is_normalized_for_window_regression():
         mode="strict_tags",
     )
     prompt = result.base_prompt
-    assert "1girl" in prompt
-    assert "anal" in prompt
-    assert "hands pressed against window" in prompt
-    assert "blurry background" in prompt
-    assert "schoolyard" in prompt
-    assert "realistic" not in prompt
-    assert "wide angle" not in prompt
-    assert "female genitalia" not in prompt
-    assert "intense" not in prompt
-    assert "high detail" not in prompt
-    assert "soft lighting" not in prompt
+    normalized = norm(prompt)
+    assert "1girl" in normalized
+    assert "anal" in normalized
+    assert "hands pressed against window" in normalized
+    assert "blurry background" in normalized
+    assert "schoolyard" in normalized
+    assert "realistic" not in normalized
+    assert "wide angle" not in normalized
+    assert "female genitalia" not in normalized
+    assert "intense" not in normalized
+    assert "high detail" not in normalized
+    assert "soft lighting" not in normalized
     assert all(not item.startswith("MISS:") for item in result.coverage)
 
 
