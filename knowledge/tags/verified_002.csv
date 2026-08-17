@@ -36,7 +36,7 @@ light_particles,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently v
 film_grain,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=film_grain,Active visual effect tag.
 blurry_background,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=blurry_background,Active focus/background tag.
 sunlight,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/wiki_pages/sunlight,Use when sunlight is meaningfully emphasized; not merely daytime.
-earrrings,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=earrings,Active accessory tag.
+earrings,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=earrings,Active accessory tag.
 collarbone,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=collarbone,Active body-feature tag.
 glasses,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=glasses,Active accessory tag.
 blurred foreground → blurry_foreground,TAG_SOURCE_PREFERS_OTHER_TAG,Danbooru source normalization only,https://safebooru.donmai.us/posts?tags=blurry_foreground,Current source vocabulary uses blurry_foreground; do not claim blurred_foreground is a formal alias without alias metadata.
