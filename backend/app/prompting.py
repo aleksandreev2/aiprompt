@@ -9,35 +9,44 @@ Turn the user's visual intent into ONE coherent, immediately useful prompt plan.
 
 CORE BEHAVIOUR:
 - The local verified database is a validation/reference layer, NOT an allowlist.
-- You may use concise NovelAI/Danbooru-style candidate tags from your own knowledge even when they are not present in the optional local vocabulary. The application validates them afterward.
-- Do not confuse "Strict Tags" with "literal-only". Strict Tags means prefer compact tag vocabulary over prose.
+- Corpus-observed vocabulary is evidence of prompting practice, NOT proof of canonical Danbooru status.
 - Preserve every explicit user requirement and prohibition.
-- If the user intentionally leaves appearance/identity/outfit unspecified (for example: "I will fill appearance later"), LEAVE those dimensions unspecified. Do not invent hair, eyes, clothes, body type, identity, or franchise details.
-- You MAY add scene-supporting controls that make the requested composition work: compatible pose/posture, framing/view angle, gaze/expression, interaction detail, motion/effects, rendering, lighting, and a plausible minimal environment when the user did not lock them.
-- Added details must support the requested visual intent, never change it into a different scene.
-- Never output alternatives or contradictory variants. Pick one composition.
-- Never enumerate the optional vocabulary and never add unrelated controls merely because a tag exists.
+- If appearance/identity/outfit is intentionally unspecified, LEAVE it unspecified. Never invent hair, eyes, clothes, body type, identity or franchise.
+- Do not infer an unspecified partner's gender merely from an interaction.
+- Added controls may clarify composition, posture, limb placement, framing, gaze/expression, depth, motion, rendering, light and environment, but must support the requested scene rather than replace it.
+- Never output alternatives or contradictory variants.
 - Negative/undesired concepts belong only in `uc`.
-- Do not automatically dump generic UC. Add UC only when it meaningfully protects the requested composition.
 - If NovelAI Add Quality Tags is ON, do not duplicate its automatic quality preamble.
-- Preserve user-supplied NovelAI weighting syntax such as `0.7::token ::` when it is clearly intentional.
+- Preserve deliberate NovelAI numerical emphasis such as `0.7::token ::`.
 
-SEMANTIC OUTPUT ORDER:
-1. style
-2. subject
-3. action_pose
-4. camera
-5. anatomy_details
-6. expression
-7. rendering
-8. lighting
-9. scene
+TAG-DIALECT RULES:
+- In Tag-heavy mode, WRITE PROMPT ATOMS, NOT DESCRIPTIVE SENTENCES.
+- Prefer a short established/observed control such as `1girl`, `from side`, `blurry background`, etc. over prose like `a girl viewed from the side with a blurred background`.
+- When subject count is known, prefer count controls such as `1girl` over generic `girl`.
+- Never use vague filler such as `intense`, `high detail`, `beautiful scene`, `dynamic composition` merely to make the prompt longer.
+- Do not auto-add `realistic`/`photorealistic`; style controls must be requested or clearly implied by the user's stated target.
+- Do not auto-add generic anatomy. `critical_details` exists only for details that are requested or genuinely required to disambiguate the intended visual action.
+- If there is no reliable compact tag for a necessary relation or limb placement, preserve ONE short precise prose atom instead of inventing a fake tag.
 
-For a SINGLE subject, keep the useful scene in the base blocks above.
-For MULTIPLE distinct characters, keep global scene/camera/light in base blocks and use `characters` for identity/appearance/outfit/per-character action/expression.
+SEMANTIC DECOMPOSITION:
+1. style — requested quality/style/mesh controls only
+2. subject — counts/types/relation controls
+3. interaction — the actual interaction/action anchors; do not paraphrase them into a sentence when a compact control exists
+4. pose — BODY STATE + ORIENTATION + LIMB ACTION
+5. camera — framing and one dominant compatible view angle
+6. expression_gaze — expression, mouth/eye state and gaze as separate compatible controls
+7. critical_details — only small details necessary for the requested visual result
+8. rendering — depth/focus/motion/material/skin/effect controls
+9. lighting — a small purposeful lighting set, never adjective padding
+10. scene — location/background/time cues
+
+For MULTIPLE distinct characters, keep global scene/camera/light in base blocks and put character-specific identity/appearance/outfit/action in `characters` when useful. For a single focal subject with an implied/off-camera participant, do not create a useless character box merely to satisfy the schema.
 
 QUALITY BAR:
-A useful prompt is not a two-tag paraphrase of the request. It should translate broad intent into objective visual controls while staying coherent and compact.
+- A useful prompt is not a literal translation of the Russian sentence.
+- A useful prompt decomposes the request into independent controls that NovelAI can steer.
+- Rich means semantic coverage, not synonym count.
+- Every emitted atom must have a job.
 Return only data conforming to the requested JSON schema.
 """.strip()
 
@@ -54,32 +63,28 @@ def build_system(
 
     mode_note = {
         "balanced": (
-            "Use compact tags where they are natural; use short prose when a relation or nuance is clearer in prose."
+            "Use compact tags where natural; use a short precise prose atom only when a relation cannot be expressed reliably as a tag."
         ),
         "strict_tags": (
-            "Prefer concise NovelAI/Danbooru-style tag candidates. This is tag-heavy mode, NOT a local-database allowlist. "
-            "Unknown-to-local-core candidates are allowed and will be labelled by the application afterward."
+            "Prefer concise NovelAI/Danbooru-style prompt atoms. Avoid sentence grammar. Unknown-to-local-core candidates are allowed and will be labelled afterward."
         ),
         "prose_fallback": (
-            "Use known tags for simple controls, but freely use short natural-language phrases for nuanced relations and composition."
+            "Use known tags for simple controls, but short natural-language atoms are allowed for nuanced relations. Still avoid full descriptive sentences."
         ),
     }[mode]
 
     detail_note = {
         "literal": (
-            "LITERAL depth: use only explicit facts plus the minimum controls strictly required to make them visually coherent. "
-            "Target roughly 6-14 total prompt atoms."
+            "LITERAL depth: explicit facts plus only the minimum controls needed to make them visually coherent. Usually 6-12 useful atoms."
         ),
         "enhanced": (
-            "ENHANCED depth: preserve explicit facts and add a restrained set of compatible pose/camera/expression/render/light/scene controls. "
-            "Target roughly 14-26 total prompt atoms."
+            "ENHANCED depth: preserve explicit facts and add restrained compatible pose/camera/gaze/depth/light/scene controls. Usually 10-20 useful atoms."
         ),
         "rich": (
-            "RICH depth: build a production-style prompt. Preserve locked facts, then add useful compatible composition, interaction, "
-            "expression, rendering, lighting and environment controls. Target roughly 22-40 total prompt atoms when the scene benefits from them. "
-            "Do not pad with irrelevant synonyms."
+            "RICH depth: production-style semantic coverage. Fill the dimensions that materially help this scene, usually about 16-30 useful atoms. "
+            "Stop when the requested interaction, pose, camera, expression/depth and environment are adequately controlled; never pad toward a quota."
         ),
-    }.get(detail_level, "RICH depth: target a complete but coherent production-style prompt.")
+    }.get(detail_level, "RICH depth: build a complete but non-padded production prompt.")
 
     quality_note = (
         "NovelAI Add Quality Tags is ON: omit duplicate automatic quality preamble."
@@ -89,16 +94,23 @@ def build_system(
 
     if records:
         vocab = (
-            "\n\nOPTIONAL EXACT-MATCH VOCABULARY — reference only, not an allowlist or checklist:\n"
+            "\n\nOPTIONAL EXACT-MATCH VERIFIED VOCABULARY — reference only, not an allowlist/checklist:\n"
             + kb.format_tag_context(records)
         )
     else:
         vocab = (
-            "\n\nNo local vocabulary rows lexically matched the user's wording. "
-            "That is normal, especially for Russian input. Build the scene from your NovelAI/Danbooru prompting knowledge; "
-            "the application will mark which candidates are locally verified."
+            "\n\nNo verified vocabulary rows lexically matched the user's wording. "
+            "That is normal for Russian input. Build the scene from prompt-engineering knowledge and the observed corpus dialect; "
+            "the application will separately mark local verification status."
+        )
+
+    corpus = ""
+    if kb.prompt_dialect and (mode == "strict_tags" or detail_level in {"enhanced", "rich"}):
+        corpus = (
+            "\n\nPROJECT CORPUS DIALECT — OBSERVED, NOT CANONICAL PROOF:\n"
+            + kb.prompt_dialect
         )
 
     return (
-        f"{SYSTEM}\n\nMODE: {mode_note}\nDETAIL: {detail_note}\nQUALITY: {quality_note}{vocab}"
+        f"{SYSTEM}\n\nMODE: {mode_note}\nDETAIL: {detail_note}\nQUALITY: {quality_note}{vocab}{corpus}"
     )
