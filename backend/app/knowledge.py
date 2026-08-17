@@ -28,6 +28,7 @@ class KnowledgeBase:
         self.tags: list[TagRecord] = []
         self.by_norm: dict[str, TagRecord] = {}
         self.reference_text = ""
+        self.prompt_dialect = ""
         self._load()
 
     def _load(self) -> None:
@@ -58,10 +59,18 @@ class KnowledgeBase:
 
         source_dir = self.root / "source"
         chunks = []
-        for name in ("model_profile_v45.md", "prompt_compiler.md", "knowledge_map.md"):
+        for name in (
+            "model_profile_v45.md",
+            "prompt_compiler.md",
+            "knowledge_map.md",
+            "telegram_prompt_dialect.md",
+        ):
             p = source_dir / name
             if p.exists():
-                chunks.append(p.read_text(encoding="utf-8", errors="replace"))
+                text = p.read_text(encoding="utf-8", errors="replace")
+                chunks.append(text)
+                if name == "telegram_prompt_dialect.md":
+                    self.prompt_dialect = text.strip()
         self.reference_text = "\n\n---\n\n".join(chunks)
 
     def resolve(self, text: str) -> TagRecord | None:
@@ -77,16 +86,11 @@ class KnowledgeBase:
         )
 
     def select_tags(self, intent: str, limit: int = 8) -> list[TagRecord]:
-        """Return only vocabulary that genuinely matches the user's wording.
+        """Return only verified vocabulary that genuinely matches user wording.
 
-        Never pad the result with generic documented tags. Small local models can
-        otherwise treat the reference list as a checklist and produce unrelated
-        hair/eye/clothing/UC tags.
-
-        Matching is phrase-conservative. On Russian input there may be zero
-        lexical matches; that is fine. The LLM proposes a small number of English
-        tag candidates and the deterministic validator checks each one against the
-        full database afterward.
+        This verified lookup is intentionally narrow and is never used as an
+        allowlist. Corpus-observed prompt patterns live in a separate runtime
+        reference so evidence classes do not get mixed together.
         """
         if limit <= 0:
             return []
