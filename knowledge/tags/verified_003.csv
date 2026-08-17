@@ -1,0 +1,71 @@
+canonical_tag,evidence_type,model_applicability,source_url,notes
+parted bangs,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official front-hair vocabulary.
+knee boots,DOCUMENTED_FOOTWEAR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official footwear vocabulary.
+lens flare,DOCUMENTED_EFFECT,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official NovelAI special-effect tag.
+color trace,DOCUMENTED_STYLE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official drawing-technique tag.
+straight hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-texture tag.
+hair between eyes,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official front-hair tag.
+gradient hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official complex hair-color tag.
+streaked hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official complex hair-color tag.
+wavy hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-texture tag.
+curly hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-texture tag.
+medium hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-length tag.
+blonde hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-color tag.
+red eyes,DOCUMENTED_EYES,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official eye-color tag.
+black eyes,DOCUMENTED_EYES,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official eye-color tag.
+green eyes,DOCUMENTED_EYES,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official eye-color tag.
+worst quality,DOCUMENTED_UC_CONCEPT,Current NovelAI V4.5,https://docs.novelai.net/en/image/undesiredcontent/,"Current V4.5 UC concept; normally used in Undesired Content, not positive prompt."
+jpeg artifacts,DOCUMENTED_UC_CONCEPT,Current NovelAI V4.5,https://docs.novelai.net/en/image/undesiredcontent/,Current V4.5 UC concept.
+bad anatomy,DOCUMENTED_UC_CONCEPT,V4.5 Human Focus UC,https://docs.novelai.net/en/image/undesiredcontent/,Documented Human Focus UC concept.
+watermark,DOCUMENTED_UC_CONCEPT,NovelAI UC families,https://docs.novelai.net/en/image/undesiredcontent/,Documented UC concept; exact preset wording is model-dependent.
+glowing eyes,DOCUMENTED_UC_CONCEPT,V4.5 Human Focus UC,https://docs.novelai.net/en/image/undesiredcontent/,Recognized in current UC; use positively only when actually desired.
+side view → from side,NAI_PREFERENCE,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Project normalization to documented from side when geometry matches; no alias claim.
+t-shirt,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11862494?q=shirt,Active clothing tag; ~96k posts.
+suit,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/comments?page=10,Active clothing tag in current source.
+looking_away,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/6124673?q=looking_away,Active gaze/head-direction tag; ~35k posts.
+cargo_pants,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/9805347,Active legwear tag; ~2.5k posts.
+teeth,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/9096765,Active facial-feature tag; ~750k posts.
+sky,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10982119,Active environment tag; ~600k posts.
+high_heels,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10642757,Active footwear tag; ~280k posts.
+loafers,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/3461066,Active footwear tag; ~82k posts.
+pleated_skirt,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/9994861,Active skirt-detail tag; ~694k posts.
+ear_piercing,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11879319?q=dark,Active piercing tag; ~105k posts.
+cat_ears,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10642757,Active animal-ear tag; ~395k posts.
+makeup,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/comments?page=10,Active appearance tag.
+leaning_forward,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11690226,Active pose tag; ~158k posts.
+holding_hands,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11692389?q=oc_x_canon,Active relational interaction tag; ~143k posts.
+kiss,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?page=2&tags=kissing_neck,Active non-explicit interaction tag; ~93k posts.
+hug,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/3447574,Active non-explicit interaction tag; ~170k posts.
+long_coat,VERIFIED_TAG_SOURCE_WIKI,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=long_coat&z=1,Canonical coat-length tag; longcoat documented alias.
+hood,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8836566,Active clothing tag; ~430k posts.
+white_dress,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8076147,Active clothing tag; ~428k posts.
+tongue,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/9885769,Active facial-feature tag; distinct from tongue_out.
+fur_trim,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8836566,Active clothing-detail tag; ~226k posts.
+slit_pupils,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/9096765,Active eye-feature tag; ~90k posts.
+winter_clothes,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8836566,Active clothing-category tag; ~26k posts.
+black_coat,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11394811,Active clothing tag; ~96k posts.
+black_shorts,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11394811,Active legwear tag; ~190k posts.
+platform_boots,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/9679635,Active footwear tag; ~5.3k posts.
+turtleneck,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/9777266?q=exploded_cosmetics,Active clothing tag; ~176k posts.
+crying,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts?tags=kooh_ku,Active expression tag; ~104k posts.
+pearl_necklace,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11840251,Active accessory tag; ~15k posts.
+sweatdrop,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/5488307,Active expression-symbol tag; ~320k posts.
+combat_boots,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/2267028?q=as_val,Active footwear tag; ~2.1k posts.
+on_back,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10841083?q=ein_%28blue_archive%29,Active body-position tag; ~349k posts.
+chinese_clothes,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8304143?q=china_comic,Active clothing-category tag; ~159k posts.
+thigh_boots,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/11702004,Active footwear tag; ~121k posts.
+long_skirt,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/8304151?q=naxi_clothes,Active skirt-length tag; ~53k posts.
+wind,VERIFIED_TAG_SOURCE,Tag-source only; NovelAI not independently verified,https://safebooru.donmai.us/posts/10255705,Active environment/motion tag; ~66k posts.
+logo,DOCUMENTED_UC_CONCEPT,V4.5 Full UC,https://docs.novelai.net/en/image/undesiredcontent/,Current V4.5 UC concept; normally belongs in Undesired Content.
+red hair,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official hair-color tag.
+freckles,DOCUMENTED_FACE_DETAIL,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official face-detail tag.
+purple eyes,DOCUMENTED_EYES,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official eye-color tag.
+pastel colors,DOCUMENTED_COLORING,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official coloring tag.
+blunt bangs,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official front-hair tag.
+dithering,DOCUMENTED_EFFECT,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official effect/shading tag; can conflict with some UC presets.
+backlighting,DOCUMENTED_EFFECT,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-artstyles/,Official lighting/effect tag.
+ahoge,DOCUMENTED_HAIR,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official top-hair tag.
+lowres,DOCUMENTED_UC_CONCEPT,V4.5 Full UC,https://docs.novelai.net/en/image/undesiredcontent/,Current V4.5 UC concept.
+scan artifacts,DOCUMENTED_UC_CONCEPT,V4.5 Full UC,https://docs.novelai.net/en/image/undesiredcontent/,Current V4.5 UC concept.
+bad quality,DOCUMENTED_QUALITY_AND_UC,Current NovelAI image models,https://docs.novelai.net/en/image/tags/,Official negative quality tag and current UC concept.
+yellow eyes,DOCUMENTED_EYES,NovelAI Anime models,https://docs.novelai.net/en/image/tutorial-charactercreation/,Official eye-color tag.
