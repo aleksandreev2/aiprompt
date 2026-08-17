@@ -60,5 +60,9 @@ class GenerateResponse(BaseModel):
     warnings: list[str]
     notes: list[str]
     verified_tags_used: list[str]
+    observed_candidates: list[str] = Field(default_factory=list)
+    unverified_candidates: list[str] = Field(default_factory=list)
     prose_fallbacks: list[str]
+    coverage: list[str] = Field(default_factory=list)
+    conflicts_removed: list[str] = Field(default_factory=list)
     model: str
