@@ -10,25 +10,27 @@ class CharacterPlan(BaseModel):
     label: str = Field(default="Character", max_length=60)
     identity_appearance: list[str] = Field(default_factory=list, max_length=12)
     outfit: list[str] = Field(default_factory=list, max_length=10)
-    expression: list[str] = Field(default_factory=list, max_length=10)
-    action_pose: list[str] = Field(default_factory=list, max_length=14)
-    details: list[str] = Field(default_factory=list, max_length=10)
+    expression_gaze: list[str] = Field(default_factory=list, max_length=10)
+    interaction: list[str] = Field(default_factory=list, max_length=12)
+    pose: list[str] = Field(default_factory=list, max_length=12)
+    critical_details: list[str] = Field(default_factory=list, max_length=10)
 
 
 class ModelPlan(BaseModel):
-    """Token-efficient semantic plan.
+    """Token-efficient semantic prompt plan.
 
-    Lists of short strings are dramatically cheaper than one JSON object per
-    tag.  This leaves enough budget for a genuinely useful 20-40-control prompt
-    without returning to the old 2200-token runaway behaviour.
+    Each list represents a different steering dimension. Keeping interaction,
+    pose, camera and details separate prevents small local models from collapsing
+    a whole scene into one descriptive English sentence.
     """
 
     style: list[str] = Field(default_factory=list, max_length=10)
     subject: list[str] = Field(default_factory=list, max_length=8)
-    action_pose: list[str] = Field(default_factory=list, max_length=16)
+    interaction: list[str] = Field(default_factory=list, max_length=16)
+    pose: list[str] = Field(default_factory=list, max_length=14)
     camera: list[str] = Field(default_factory=list, max_length=10)
-    anatomy_details: list[str] = Field(default_factory=list, max_length=16)
-    expression: list[str] = Field(default_factory=list, max_length=12)
+    expression_gaze: list[str] = Field(default_factory=list, max_length=12)
+    critical_details: list[str] = Field(default_factory=list, max_length=14)
     rendering: list[str] = Field(default_factory=list, max_length=12)
     lighting: list[str] = Field(default_factory=list, max_length=10)
     scene: list[str] = Field(default_factory=list, max_length=10)
