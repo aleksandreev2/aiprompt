@@ -9,7 +9,7 @@ def test_unknown_candidate_is_kept_as_fallback():
     kb = KnowledgeBase(Path(__file__).parents[1] / "knowledge")
     plan = ModelPlan(
         camera=["from below"],
-        anatomy_details=["not_a_real_tag_123"],
+        critical_details=["not_a_real_tag_123"],
     )
     out = compile_plan(plan, kb, "test")
     assert "from below" in out.verified_tags_used
@@ -24,3 +24,22 @@ def test_weighted_candidate_is_preserved():
     out = compile_plan(plan, kb, "test")
     assert "0.7::custom style token ::" in out.base_prompt
     assert "0.7::custom style token ::" in out.prose_fallbacks
+
+
+def test_interaction_pose_camera_order_is_stable():
+    kb = KnowledgeBase(Path(__file__).parents[1] / "knowledge")
+    plan = ModelPlan(
+        subject=["1girl"],
+        interaction=["hug"],
+        pose=["leaning forward"],
+        camera=["from side"],
+        rendering=["blurry background"],
+        scene=["indoors"],
+    )
+    out = compile_plan(plan, kb, "test")
+    atoms = [x.strip() for x in out.base_prompt.split(",")]
+    assert atoms.index("1girl") < atoms.index("hug")
+    assert atoms.index("hug") < atoms.index("leaning forward")
+    assert atoms.index("leaning forward") < atoms.index("from side")
+    assert atoms.index("from side") < atoms.index("blurry background")
+    assert atoms.index("blurry background") < atoms.index("indoors")
